@@ -1,0 +1,16 @@
+{
+  "name": "dummy-server",
+  "version": "1.0.0",
+  "description": "Simple server to provide responses for front-end development",
+  "repository": "https://github.com/skyduck0205/dummy-server.git",
+  "author": "skyduck0205 <skyduck0205@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "cookie-parser": "^1.4.5",
+    "debug": "^4.1.1",
+    "express": "^4.17.1",
+    "lodash": "^4.17.15",
+    "morgan": "^1.10.0",
+    "url-pattern": "^1.0.3"
+  }
+}
