@@ -1,1 +1,1 @@
-# dummy-server
+# dummy-api-server
