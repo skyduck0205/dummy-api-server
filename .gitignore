@@ -1,3 +1,6 @@
+# Database files
+db/*.json
+
 # Logs
 logs
 *.log
