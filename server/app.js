@@ -13,7 +13,7 @@ const app = express();
 // Initialize DB
 const db = low(new FileSync(DB_PATH));
 db.defaults({})
-  .write()
+  .write();
 
 // Server config
 app.use(logger('dev'));
