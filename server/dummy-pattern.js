@@ -30,22 +30,22 @@ class DummyPattern {
 
   /**
    * Transfer a pattern from path by serializing the url parameters and
-   * sorting the query params. The pathPattern in router should be unique.
+   * sorting the query params. The normalizedPath in router should be unique.
    * @example
    * '/api/:param/:anotherParam?page&orderBy' will have a path pattern
    * '/api/:0/:1?orderBy&page'
    */
-  get pathPattern() {
-    let pathPattern = this.url;
+  get normalizedPath() {
+    let normalizedPath = this.url;
     // replace url param names with number id
     const paramMatches = this.url.match(/\:[^\/]+/g);
-    _.forEach(paramMatches, (m, i) => pathPattern = pathPattern.replace(m, `:${i}`));
+    _.forEach(paramMatches, (m, i) => normalizedPath = normalizedPath.replace(m, `:${i}`));
     // sort query param names
     if (this.query) {
       const sortedQuery = this.query.split('&').sort().join('&');
-      pathPattern = `${pathPattern}?${sortedQuery}`;
+      normalizedPath = `${normalizedPath}?${sortedQuery}`;
     }
-    return pathPattern;
+    return normalizedPath;
   }
 
   /**

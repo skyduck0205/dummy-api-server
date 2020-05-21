@@ -70,31 +70,31 @@ describe('DummyPattern', () => {
     });
   });
 
-  describe('pathPattern getter', () => {
+  describe('normalizedPath getter', () => {
     it('replace url parameter with number', () => {
       const dp = new DummyPattern('/api/:param');
-      assert.equal(dp.pathPattern, '/api/:0');
+      assert.equal(dp.normalizedPath, '/api/:0');
     });
 
     it('replace multiple url parameters with numbers', () => {
       const dp = new DummyPattern('/api/:param/page/:anotherParam');
-      assert.equal(dp.pathPattern, '/api/:0/page/:1');
+      assert.equal(dp.normalizedPath, '/api/:0/page/:1');
     });
 
     it('sort query parameters', () => {
       const dp = new DummyPattern('/api?page&orderBy&search');
-      assert.equal(dp.pathPattern, '/api?orderBy&page&search');
+      assert.equal(dp.normalizedPath, '/api?orderBy&page&search');
     });
 
     it('replace url parameter and sort query parameters', () => {
       const dp = new DummyPattern('/api/:param/:anotherParam/:thirdParam?c=1&a&d&b=true');
-      assert.equal(dp.pathPattern, '/api/:0/:1/:2?a&b=true&c=1&d');
+      assert.equal(dp.normalizedPath, '/api/:0/:1/:2?a&b=true&c=1&d');
     });
 
     it('return empty string if path is empty', () => {
       const dp = new DummyPattern('/url');
       dp.path = '';
-      assert.equal(dp.pathPattern, '');
+      assert.equal(dp.normalizedPath, '');
     });
   });
 
