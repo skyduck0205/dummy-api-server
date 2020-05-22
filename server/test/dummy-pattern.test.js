@@ -98,6 +98,57 @@ describe('DummyPattern', () => {
     });
   });
 
+  describe('urlParamsLength getter', () => {
+    it('return url parameter length of url', () => {
+      const dp = new DummyPattern('/api/:0/:1');
+      assert.equal(dp.urlParamsLength, 2);
+    });
+
+    it('return url parameter length of url with query string', () => {
+      const dp = new DummyPattern('/api/:0/:1?q0&q1');
+      assert.equal(dp.urlParamsLength, 2);
+    });
+
+    it('return 0 if no url parameter', () => {
+      const dp = new DummyPattern('/api');
+      assert.equal(dp.urlParamsLength, 0);
+    });
+  });
+
+  describe('strictQueryParamsLength getter', () => {
+    it('return strict query parameter length of url', () => {
+      const dp = new DummyPattern('/api/:0/:1?q0=1&q1&q2');
+      assert.equal(dp.strictQueryParamsLength, 1);
+    });
+
+    it('return 0 if no strict query parameter', () => {
+      const dp = new DummyPattern('/api?q0&q1');
+      assert.equal(dp.strictQueryParamsLength, 0);
+    });
+
+    it('return 0 if no query string', () => {
+      const dp = new DummyPattern('/api');
+      assert.equal(dp.strictQueryParamsLength, 0);
+    });
+  });
+
+  describe('looseQueryParamsLength getter', () => {
+    it('return loose query parameter length of url', () => {
+      const dp = new DummyPattern('/api/:0/:1?q0=1&q1&q2');
+      assert.equal(dp.looseQueryParamsLength, 2);
+    });
+
+    it('return 0 if no loose query parameter', () => {
+      const dp = new DummyPattern('/api?q0=1&q1=1');
+      assert.equal(dp.looseQueryParamsLength, 0);
+    });
+
+    it('return 0 if no query string', () => {
+      const dp = new DummyPattern('/api');
+      assert.equal(dp.looseQueryParamsLength, 0);
+    });
+  });
+
   describe('parseUrlPattern', () => {
     it('set urlPattern with a UrlPattern instance', () => {
       const dp = new DummyPattern('/url');
@@ -188,10 +239,10 @@ describe('DummyPattern', () => {
 
     it('return result of urlPattern.match', () => {
       const dp = new DummyPattern('/url?page=1&orderBy=id');
-      const stub = sinon.stub(dp.urlPattern, 'match');
-      stub.returns(true);
+      sinon.stub(dp.urlPattern, 'match')
+        .onFirstCall().returns(true)
+        .onSecondCall().returns(false);
       assert(dp.matchUrl(''));
-      stub.returns(false);
       assert(!dp.matchUrl(''));
     });
 

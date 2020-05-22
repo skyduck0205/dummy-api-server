@@ -38,14 +38,35 @@ class DummyPattern {
   get normalizedPath() {
     let normalizedPath = this.url;
     // replace url param names with number id
-    const paramMatches = this.url.match(/\:[^\/]+/g);
-    _.forEach(paramMatches, (m, i) => normalizedPath = normalizedPath.replace(m, `:${i}`));
+    const matchedParams = this.url.match(/\:[^\/]+/g);
+    _.forEach(matchedParams, (m, i) => normalizedPath = normalizedPath.replace(m, `:${i}`));
     // sort query param names
     if (this.query) {
       const sortedQuery = this.query.split('&').sort().join('&');
       normalizedPath = `${normalizedPath}?${sortedQuery}`;
     }
     return normalizedPath;
+  }
+
+  /**
+   * Get the length of url parameters
+   */
+  get urlParamsLength() {
+    return _.size(this.url.match(/\:[^\/]+/g));
+  }
+
+  /**
+   * Get the length of query parameters which are assigned value.
+   */
+  get strictQueryParamsLength() {
+    return _(this.queryPattern).omitBy(v => v === true).size();
+  }
+
+  /**
+   * Get the length of query parameters which are not assigned value.
+   */
+  get looseQueryParamsLength() {
+    return _(this.queryPattern).pickBy(v => v === true).size();
   }
 
   /**
