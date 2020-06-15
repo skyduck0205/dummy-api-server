@@ -40,4 +40,17 @@ app.route(`${DS_PREFIX}/api`)
   // get api list
   .get((req, res) => res.send(db.get('apis').value()));
 
+/**
+ * Dummy APIs
+ */
+app.all('*', (req, res) => {
+  // match path with request object
+  const { method, path, query } = req;
+  const response = router.getCurrentResponse(method, path, query);
+  if (!response) {
+    return res.status(404).send({ message: 'Dummy API Server: API not found!' });
+  }
+  res.status(response.status).send(response.body);
+});
+
 module.exports = app;
