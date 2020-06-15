@@ -7,8 +7,8 @@
   "license": "MIT",
   "scripts": {
     "start": "node ./bin/www",
-    "test": "mocha --inline-diffs",
-    "test:coverage": "nyc yarn test"
+    "test": "mocha --inline-diffs -w --watch-files test",
+    "test:coverage": "nyc --reporter=html --reporter=text mocha --inline-diffs"
   },
   "dependencies": {
     "cookie-parser": "^1.4.5",
