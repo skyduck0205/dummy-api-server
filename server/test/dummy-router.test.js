@@ -209,4 +209,52 @@ describe('DummyRouter', () => {
       assert.equal(api, apis[0]);
     });
   });
+
+  describe('getCurrentResponse', () => {
+    let matchAPIStub;
+
+    beforeEach(() => {
+      matchAPIStub = sinon.stub(DummyRouter.prototype, 'getMatchedAPI');
+    });
+
+    afterEach(() => {
+      matchAPIStub.restore();
+    });
+
+    it('return null if no api found', () => {
+      matchAPIStub.returns(null);
+      const dp = new DummyRouter();
+      const api = dp.getCurrentResponse('GET', '', {});
+      assert(matchAPIStub.calledOnceWith('GET', '', {}));
+      assert.equal(api, null);
+    });
+
+    it('return api response by current response id', () => {
+      matchAPIStub
+        .returns({
+          currentResponseID: 'id-1',
+          responses: [
+            { id: 'id-0' },
+            { id: 'id-1' }
+          ]
+        });
+      const dp = new DummyRouter();
+      const api = dp.getCurrentResponse('GET', '', {});
+      assert.deepEqual(api, { id: 'id-1' });
+    });
+
+    it('return null if response id not found', () => {
+      matchAPIStub
+        .returns({
+          currentResponseID: 'id-3',
+          responses: [
+            { id: 'id-0' },
+            { id: 'id-1' }
+          ]
+        });
+      const dp = new DummyRouter();
+      const api = dp.getCurrentResponse('GET', '', {});
+      assert.equal(api, null);
+    });
+  });
 });

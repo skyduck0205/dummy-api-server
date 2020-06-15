@@ -53,6 +53,19 @@ class DummyRouter {
       )
       .value();
   }
+
+  /**
+   * Get current response
+   * @param {string} method - request method
+   * @param {string} path - request path
+   * @param {object} query - request query key-value object
+   * @returns {object} - Response object
+   */
+  getCurrentResponse(method, path, query) {
+    const api = this.getMatchedAPI(method, path, query);
+    if (!api) { return null; }
+    return _.find(api.responses, { id: api.currentResponseID }) || null;
+  }
 }
 
 module.exports = DummyRouter;
