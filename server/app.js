@@ -37,8 +37,33 @@ app.use(express.static(PUBLIC_PATH));
  * Dummy Server APIs
  */
 app.route(`${DS_PREFIX}/apis`)
-  // get api list
-  .get((req, res) => res.send(db.get('apis').value()));
+  .get((req, res) => res.send({ // get api list
+    code: 1,
+    message: 'Dummy API Server: List API successfully',
+    data: db.get('apis').value()
+  }));
+
+app.route(`${DS_PREFIX}/apis/:apiID/current`)
+  .put((req, res) => { // update api current response
+    const { params, body } = req;
+
+    const api = db.get('apis').find({ id: params.apiID });
+    if (!api.value()) {
+      return res.status(404).send({
+        code: 0,
+        message: 'Dummy API Server: API not found!'
+      });
+    }
+
+    api.assign({ currentResponseID: body.responseID })
+      .write();
+
+    res.send({
+      code: 1,
+      message: 'Dummy API Server: Update API response successfully',
+      data: api.value()
+    });
+  });
 
 /**
  * Dummy APIs
@@ -48,7 +73,10 @@ app.all('*', (req, res) => {
   const { method, path, query } = req;
   const response = router.getCurrentResponse(method, path, query);
   if (!response) {
-    return res.status(404).send({ message: 'Dummy API Server: API not found!' });
+    return res.status(404).send({
+      code: 0,
+      message: 'Dummy API Server: API not found!'
+    });
   }
   res.status(response.status).send(response.body);
 });
