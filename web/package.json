@@ -11,6 +11,7 @@
     "axios": "0.19.2",
     "lodash": "4.17.15",
     "material-table": "1.61.0",
+    "notistack": "0.9.17",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-scripts": "3.4.1"
