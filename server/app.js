@@ -36,7 +36,7 @@ app.use(express.static(PUBLIC_PATH));
 /**
  * Dummy Server APIs
  */
-app.route(`${DS_PREFIX}/api`)
+app.route(`${DS_PREFIX}/apis`)
   // get api list
   .get((req, res) => res.send(db.get('apis').value()));
 
