@@ -7,9 +7,19 @@ axios.interceptors.response.use(
   (error) => Promise.reject(error.response && error.response.data)
 );
 
-export async function listApis() {
+export async function listAPIs() {
   try {
     return await axios.get('/_ds/apis');
+  } catch (error) {
+    throw new ApiResponseError({
+      message: _get(error, 'message', ''),
+    });
+  }
+}
+
+export async function updateAPIResponse(apiID, responseID) {
+  try {
+    return await axios.put(`/_ds/apis/${apiID}/current`, { responseID });
   } catch (error) {
     throw new ApiResponseError({
       message: _get(error, 'message', ''),
