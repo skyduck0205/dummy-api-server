@@ -5,7 +5,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import ApiList from 'App/ApiList';
 
 function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -23,13 +23,12 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box minHeight="100vh">
-        <AppBar position="sticky">
-          <Toolbar>
-            <Typography variant="h6">Dummy API Server</Typography>
-          </Toolbar>
-        </AppBar>
-      </Box>
+      <AppBar position="sticky">
+        <Toolbar>
+          <Typography variant="h6">Dummy API Server</Typography>
+        </Toolbar>
+      </AppBar>
+      <ApiList />
     </ThemeProvider>
   );
 }
