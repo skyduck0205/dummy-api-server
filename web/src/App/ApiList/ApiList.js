@@ -151,7 +151,7 @@ function ApiList() {
       <ApiEditModal
         open={isEditModalOpen}
         api={selectedAPI}
-        onClose={() => setIsEditModalOpen(false)}
+        onCancelClick={() => setIsEditModalOpen(false)}
       />
     </>
   );

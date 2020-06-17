@@ -7,8 +7,7 @@ import Paper from '@material-ui/core/Paper';
 import Fade from '@material-ui/core/Fade';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
+import ModalHeader from 'components/ModalHeader';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -27,13 +26,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ApiEditModal({ open, onClose, api }) {
+function ApiEditModal({ open, api, onCancelClick }) {
   const classes = useStyles();
   return (
     <Modal
       className={classes.modal}
       open={open}
-      onClose={() => onClose()}
       closeAfterTransition
       disableAutoFocus
       disableEnforceFocus
@@ -41,22 +39,12 @@ function ApiEditModal({ open, onClose, api }) {
     >
       <Fade in={open}>
         <Container className={classes.container} maxWidth="md">
-          {/* modal header */}
           <Paper square elevation={5}>
-            <Box
-              px={3}
-              py={2}
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <Typography variant="h5">
-                {api ? 'Edit API' : 'Add API'}
-              </Typography>
-              <IconButton size="small" onClick={onClose}>
-                <span className="material-icons">close</span>
-              </IconButton>
-            </Box>
+            {/* modal header */}
+            <ModalHeader
+              title={api ? 'Edit API' : 'Add API'}
+              onCloseClick={onCancelClick}
+            />
 
             {/* modal body */}
             <Box p={3} py={2}>
@@ -74,9 +62,7 @@ function ApiEditModal({ open, onClose, api }) {
               <Button variant="contained" color="primary">
                 Save
               </Button>
-              <Button ml={2} onClick={onClose}>
-                Cancel
-              </Button>
+              <Button onClick={onCancelClick}>Cancel</Button>
             </Box>
           </Paper>
         </Container>
@@ -88,13 +74,13 @@ function ApiEditModal({ open, onClose, api }) {
 ApiEditModal.propTypes = {
   open: PropTypes.bool,
   api: PropTypes.object,
-  onClose: PropTypes.func,
+  onCancelClick: PropTypes.func,
 };
 
 ApiEditModal.defaultProps = {
   open: false,
   api: null,
-  onClose: () => {},
+  onCancelClick: () => {},
 };
 
 export default ApiEditModal;
