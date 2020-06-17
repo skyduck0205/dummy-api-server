@@ -6,9 +6,12 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { useSnackbar } from 'notistack';
 import useApi from 'hooks/useApi';
 import api from 'services/api';
+import ApiEditModal from 'App/ApiEditModal';
 
 function ApiList() {
-  const [apis, setApis] = React.useState([]);
+  const [apis, setAPIs] = React.useState([]);
+  const [selectedAPI, setSelectedAPI] = React.useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -45,7 +48,7 @@ function ApiList() {
 
   React.useEffect(() => {
     if (listAPIsStatus.data) {
-      setApis(listAPIsStatus.data.data);
+      setAPIs(listAPIsStatus.data.data);
     }
   }, [listAPIsStatus.data]);
 
@@ -102,31 +105,53 @@ function ApiList() {
               </Select>
             ),
           },
+          {
+            title: 'Description',
+            field: 'description',
+            cellStyle: { fontSize: 'initial' },
+          },
         ]}
         data={apis}
         options={{
           paging: false,
           actionsColumnIndex: -1,
-          rowStyle: { fontSize: 'initial' },
           headerStyle: { fontSize: 'initial' },
         }}
         actions={[
           {
+            icon: 'add',
+            tooltip: 'Add API',
+            isFreeAction: true,
+            onClick: () => {
+              setSelectedAPI(null);
+              setIsEditModalOpen(true);
+            },
+          },
+          {
             icon: 'edit',
-            tooltip: 'Edit',
-            onClick: (e, rowData) => console.log(`Edit ${rowData.id}`),
+            tooltip: 'Edit API',
+            onClick: (e, rowData) => {
+              setSelectedAPI(rowData);
+              setIsEditModalOpen(true);
+            },
           },
           {
             icon: 'file_copy',
-            tooltip: 'Copy',
+            tooltip: 'Copy API',
             onClick: (e, rowData) => console.log(`Copy ${rowData.id}`),
           },
           {
             icon: 'delete',
-            tooltip: 'Delete',
+            tooltip: 'Delete API',
             onClick: (e, rowData) => console.log(`Delete ${rowData.id}`),
           },
         ]}
+      />
+
+      <ApiEditModal
+        open={isEditModalOpen}
+        api={selectedAPI}
+        onClose={() => setIsEditModalOpen(false)}
       />
     </>
   );
