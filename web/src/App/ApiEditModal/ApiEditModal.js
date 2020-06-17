@@ -6,8 +6,8 @@ import Box from '@material-ui/core/Box';
 import Paper from '@material-ui/core/Paper';
 import Fade from '@material-ui/core/Fade';
 import Container from '@material-ui/core/Container';
-import Button from '@material-ui/core/Button';
 import ModalHeader from 'components/ModalHeader';
+import ModalFooter from 'components/ModalFooter';
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -18,11 +18,6 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     outline: 'none',
-  },
-  footer: {
-    '& button + button': {
-      marginLeft: theme.spacing(1),
-    },
   },
 }));
 
@@ -52,18 +47,7 @@ function ApiEditModal({ open, api, onCancelClick }) {
             </Box>
 
             {/* modal footer */}
-            <Box
-              className={classes.footer}
-              p={3}
-              py={2}
-              display="flex"
-              justifyContent="flex-end"
-            >
-              <Button variant="contained" color="primary">
-                Save
-              </Button>
-              <Button onClick={onCancelClick}>Cancel</Button>
-            </Box>
+            <ModalFooter onCancelClick={onCancelClick} />
           </Paper>
         </Container>
       </Fade>
