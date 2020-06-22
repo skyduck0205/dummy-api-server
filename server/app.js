@@ -43,8 +43,8 @@ app.route(`${DS_PREFIX}/apis`)
     data: db.get('apis').value()
   }));
 
-app.route(`${DS_PREFIX}/apis/:apiID/current`)
-  .put((req, res) => { // update api current response
+app.route(`${DS_PREFIX}/apis/:apiID`)
+  .patch((req, res) => { // update api current response
     const { params, body } = req;
 
     const api = db.get('apis').find({ id: params.apiID });
@@ -55,12 +55,12 @@ app.route(`${DS_PREFIX}/apis/:apiID/current`)
       });
     }
 
-    api.assign({ currentResponseID: body.responseID })
+    api.assign(body)
       .write();
 
     res.send({
       code: 1,
-      message: 'Dummy API Server: Update API response successfully',
+      message: 'Dummy API Server: Patch API successfully',
       data: api.value()
     });
   });
