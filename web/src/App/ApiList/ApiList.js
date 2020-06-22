@@ -1,11 +1,11 @@
 import React from 'react';
 import MaterialTable from 'material-table';
-import Box from '@material-ui/core/Box';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { useSnackbar } from 'notistack';
 import useApi from 'hooks/useApi';
 import api from 'services/api';
+import HttpStatus from 'components/HttpStatus';
 import ApiEditModal from 'App/ApiEditModal';
 
 function ApiList() {
@@ -86,19 +86,11 @@ function ApiList() {
               >
                 {rowData.responses.map((response) => (
                   <MenuItem key={response.id} value={response.id}>
-                    <Box
+                    <HttpStatus
+                      key={response.id}
+                      status={response.status}
                       mr={1}
-                      component="span"
-                      color={
-                        response.status >= 200 && response.status < 300
-                          ? 'success.main'
-                          : 'error.main'
-                      }
-                      display="inline-flex"
-                      alignItems="center"
-                    >
-                      {response.status}
-                    </Box>
+                    />
                     {response.name}
                   </MenuItem>
                 ))}
