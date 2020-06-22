@@ -1,6 +1,8 @@
 import React from 'react';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import blue from '@material-ui/core/colors/blue';
+import yellow from '@material-ui/core/colors/yellow';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -16,6 +18,8 @@ function App() {
       createMuiTheme({
         palette: {
           type: prefersDarkMode ? 'dark' : 'light',
+          primary: blue,
+          secondary: yellow,
         },
       }),
     [prefersDarkMode]
