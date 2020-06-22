@@ -17,9 +17,11 @@ export async function listAPIs() {
   }
 }
 
-export async function updateAPIResponse(apiID, responseID) {
+export async function updateAPIResponse(apiID, currentResponseID) {
   try {
-    return await axios.put(`/_ds/apis/${apiID}/current`, { responseID });
+    return await axios.patch(`/_ds/apis/${apiID}`, {
+      currentResponseID,
+    });
   } catch (error) {
     throw new ApiResponseError({
       message: _get(error, 'message', ''),
