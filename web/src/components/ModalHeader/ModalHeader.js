@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Box from '@material-ui/core/Box';
 import IconButton from '@material-ui/core/IconButton';
+import Icon from '@material-ui/core/Icon';
 import Typography from '@material-ui/core/Typography';
 
 function ModalHeader({ title, onCloseClick }) {
@@ -15,7 +16,7 @@ function ModalHeader({ title, onCloseClick }) {
     >
       <Typography variant="h5">{title}</Typography>
       <IconButton size="small" onClick={onCloseClick}>
-        <span className="material-icons">close</span>
+        <Icon>close</Icon>
       </IconButton>
     </Box>
   );
