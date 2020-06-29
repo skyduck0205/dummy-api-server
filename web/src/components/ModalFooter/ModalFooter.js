@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 const useStyles = makeStyles((theme) => ({
   footer: {
     '& button + button': {
-      marginLeft: theme.spacing(1),
+      marginLeft: theme.spacing(2),
     },
   },
 }));
@@ -22,10 +22,10 @@ function ModalFooter({ onOkClick, onCancelClick }) {
       display="flex"
       justifyContent="flex-end"
     >
+      <Button onClick={onCancelClick}>Cancel</Button>
       <Button variant="contained" color="primary" onClick={onOkClick}>
         Ok
       </Button>
-      <Button onClick={onCancelClick}>Cancel</Button>
     </Box>
   );
 }
