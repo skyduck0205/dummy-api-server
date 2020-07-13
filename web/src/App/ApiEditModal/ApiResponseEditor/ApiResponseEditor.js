@@ -24,6 +24,8 @@ const useStyles = makeStyles((theme) => ({
 function ApiResponseEditor({
   response,
   isCurrent,
+  isExpanded,
+  onExpandedChange,
   onChange,
   onCopyClick,
   onDeleteClick,
@@ -48,7 +50,13 @@ function ApiResponseEditor({
   };
 
   return (
-    <ExpansionPanel key={response.id} variant="outlined" square>
+    <ExpansionPanel
+      key={response.id}
+      variant="outlined"
+      square
+      expanded={isExpanded}
+      onChange={onExpandedChange}
+    >
       <ExpansionPanelSummary classes={{ content: classes.summary }}>
         <HttpStatus status={response.status} mr={1} />
         {response.name}
@@ -79,9 +87,10 @@ function ApiResponseEditor({
               type="number"
               value={response.status}
               onChange={(e) => {
-                onResponseChange('status', e.target.valueAsNumber);
+                onResponseChange('status', +e.target.value);
               }}
               placeholder="Status code"
+              autoFocus
             />
           </Box>
           {/* name */}
@@ -110,12 +119,16 @@ function ApiResponseEditor({
 ApiResponseEditor.propTypes = {
   response: PropTypes.object.isRequired,
   isCurrent: PropTypes.bool,
+  isExpanded: PropTypes.bool,
+  onExpandedChange: PropTypes.func,
   onChange: PropTypes.func,
   onCopyClick: PropTypes.func,
   onDeleteClick: PropTypes.func,
 };
 ApiResponseEditor.defaultProps = {
   isCurrent: false,
+  isExpanded: false,
+  onExpandedChange: () => {},
   onChange: () => {},
   onCopyClick: () => {},
   onDeleteClick: () => {},
