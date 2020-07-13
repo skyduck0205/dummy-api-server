@@ -1,3 +1,12 @@
-const { removeModuleScopePlugin } = require('customize-cra');
+const {
+  override,
+  removeModuleScopePlugin,
+  addBundleVisualizer,
+} = require('customize-cra');
 
-module.exports = removeModuleScopePlugin();
+module.exports = override(
+  removeModuleScopePlugin(),
+  addBundleVisualizer({
+    reportFilename: '../report/webpack-bundle-analyzer.html',
+  })
+);
