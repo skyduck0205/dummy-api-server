@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSnackbar } from 'notistack';
 import MaterialTable from 'material-table';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -10,6 +9,7 @@ import Icon from '@material-ui/core/Icon';
 import Tooltip from '@material-ui/core/Tooltip';
 import Fab from '@material-ui/core/Fab';
 import useApi from 'hooks/useApi';
+import useToast from 'hooks/useToast';
 import api from 'services/api';
 import HttpStatus from 'components/HttpStatus';
 import ApiEditModal from 'App/ApiEditModal';
@@ -33,12 +33,11 @@ function ApiList() {
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
   const classes = useStyles();
-  const { enqueueSnackbar } = useSnackbar();
+  const toast = useToast();
 
   const [listAPIsStatus, listAPIsFetch] = useApi(api.listAPIs, {
     isLoading: true,
   });
-
   const [updateAPIResponseStatus, updateAPIResponseFetch] = useApi(
     api.updateAPI
   );
@@ -49,21 +48,17 @@ function ApiList() {
 
   React.useEffect(() => {
     if (updateAPIResponseStatus.data) {
-      enqueueSnackbar(updateAPIResponseStatus.data.message, {
-        variant: 'success',
-      });
+      toast.success(updateAPIResponseStatus.data.message);
       listAPIsFetch();
     }
     if (updateAPIResponseStatus.error) {
-      enqueueSnackbar(updateAPIResponseStatus.error.message, {
-        variant: 'error',
-      });
+      toast.error(updateAPIResponseStatus.error.message);
     }
   }, [
     updateAPIResponseStatus.data,
     updateAPIResponseStatus.error,
     listAPIsFetch,
-    enqueueSnackbar,
+    toast,
   ]);
 
   React.useEffect(() => {
@@ -171,7 +166,7 @@ function ApiList() {
 
       <ApiEditModal
         open={isEditModalOpen}
-        api={selectedAPI}
+        data={selectedAPI}
         onOk={(value) => console.log('onOk', value)}
         onCancel={() => setIsEditModalOpen(false)}
       />
