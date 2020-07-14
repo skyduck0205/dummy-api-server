@@ -169,7 +169,7 @@ function ApiEditModal({ open, data, onOk, onCancel }) {
   };
 
   const onOkClick = () => {
-    if (data) {
+    if (form.id) {
       updateAPIFetch(form.id, form);
     } else {
       createAPIFetch(form);

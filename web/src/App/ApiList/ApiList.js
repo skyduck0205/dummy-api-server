@@ -77,7 +77,12 @@ function ApiList() {
   };
 
   const onCopyClick = (rowData) => {
-    console.log(rowData);
+    setSelectedAPI({
+      ...rowData,
+      description: `${rowData.description} (copied)`,
+      id: null,
+    });
+    setIsEditModalOpen(true);
   };
 
   const onDeleteClick = (rowData) => {
