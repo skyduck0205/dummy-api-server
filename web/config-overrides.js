@@ -6,7 +6,10 @@ const {
 
 module.exports = override(
   removeModuleScopePlugin(),
-  addBundleVisualizer({
-    reportFilename: '../report/webpack-bundle-analyzer.html',
-  })
+  addBundleVisualizer(
+    {
+      reportFilename: '../report/webpack-bundle-analyzer.html',
+    },
+    true
+  )
 );
