@@ -84,7 +84,7 @@ function ApiEditModal({ open, data, onOk, onCancel }) {
     if (updateAPIStatus.error) {
       toast.error(updateAPIStatus.error.message);
     }
-  }, [updateAPIStatus.data, updateAPIStatus.error, updateAPIFetch, toast]);
+  }, [updateAPIStatus.data, updateAPIStatus.error]);
 
   const onFormChange = (key, value) => {
     setForm({
