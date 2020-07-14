@@ -15,6 +15,9 @@ import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
 import ModalHeader from 'components/ModalHeader';
 import ModalFooter from 'components/ModalFooter';
+import useApi from 'hooks/useApi';
+import useToast from 'hooks/useToast';
+import api from 'services/api';
 import genId from '../../../../utils/genId';
 import ApiMethodSelector from './ApiMethodSelector';
 import ApiResponseEditor from './ApiResponseEditor';
@@ -48,27 +51,40 @@ const defaultForm = {
   currentResponseID: null,
 };
 
-function ApiEditModal({ open, api, onOk, onCancel }) {
-  const classes = useStyles();
+function ApiEditModal({ open, data, onOk, onCancel }) {
   const [form, setForm] = React.useState(defaultForm);
   const [expended, setExpanded] = React.useState(null);
 
+  const classes = useStyles();
+  const toast = useToast();
+  const [updateAPIStatus, updateAPIFetch] = useApi(api.updateAPI);
+
   React.useEffect(() => {
     if (open) {
-      if (api) {
+      if (data) {
         setForm({
-          id: api.id,
-          method: api.method,
-          path: api.path,
-          description: api.description,
-          responses: api.responses,
-          currentResponseID: api.currentResponseID,
+          id: data.id,
+          method: data.method,
+          path: data.path,
+          description: data.description,
+          responses: data.responses,
+          currentResponseID: data.currentResponseID,
         });
       } else {
         setForm(defaultForm);
       }
     }
-  }, [open, api]);
+  }, [open, data]);
+
+  React.useEffect(() => {
+    if (updateAPIStatus.data) {
+      toast.success(updateAPIStatus.data.message);
+      onOk(form);
+    }
+    if (updateAPIStatus.error) {
+      toast.error(updateAPIStatus.error.message);
+    }
+  }, [updateAPIStatus.data, updateAPIStatus.error, updateAPIFetch, toast]);
 
   const onFormChange = (key, value) => {
     setForm({
@@ -142,8 +158,7 @@ function ApiEditModal({ open, api, onOk, onCancel }) {
   };
 
   const onOkClick = () => {
-    // TODO: Request for add/update API
-    onOk(form);
+    updateAPIFetch(form.id, form);
   };
 
   return (
@@ -162,7 +177,7 @@ function ApiEditModal({ open, api, onOk, onCancel }) {
           <Paper className={classes.paper} square elevation={5}>
             {/* modal header */}
             <ModalHeader
-              title={api ? 'Edit API' : 'Add API'}
+              title={data ? 'Edit API' : 'Add API'}
               onCloseClick={onCancel}
             />
 
@@ -239,14 +254,14 @@ function ApiEditModal({ open, api, onOk, onCancel }) {
 
 ApiEditModal.propTypes = {
   open: PropTypes.bool,
-  api: PropTypes.object,
+  data: PropTypes.object,
   onOk: PropTypes.func,
   onCancel: PropTypes.func,
 };
 
 ApiEditModal.defaultProps = {
   open: false,
-  api: null,
+  data: null,
   onOk: () => {},
   onCancel: () => {},
 };
