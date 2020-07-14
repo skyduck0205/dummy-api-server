@@ -17,6 +17,16 @@ export async function listAPIs() {
   }
 }
 
+export async function createAPI(data) {
+  try {
+    return await axios.post('/_ds/apis', data);
+  } catch (error) {
+    throw new ApiResponseError({
+      message: _get(error, 'message', ''),
+    });
+  }
+}
+
 export async function updateAPI(apiID, data) {
   try {
     return await axios.patch(`/_ds/apis/${apiID}`, data);
