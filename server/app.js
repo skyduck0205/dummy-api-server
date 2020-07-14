@@ -6,6 +6,7 @@ const debug = require('debug')('ds:app');
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 const normalizePath = require('../utils/normalizePath');
+const genId = require('../utils/genId');
 const DummyRouter = require('./dummy-router');
 
 const DB = path.join(__dirname, process.env.DB || '../db/db.json');
@@ -44,7 +45,46 @@ app.route(`${DS_PREFIX}/apis`)
     code: 1,
     message: 'Dummy API Server: List API successfully',
     data: db.get('apis').value()
-  }));
+  }))
+  // create a new api
+  .post((req, res) => {
+    const { body } = req;
+
+    const dbAPIs = db.get('apis');
+
+    // check normalized path
+    body.id = genId();
+    body.normalizedPath = normalizePath(body.path);
+    const conflict = dbAPIs
+      .find({
+        method: body.method,
+        normalizedPath: body.normalizedPath,
+      })
+      .value();
+
+    // 409 if has conflict with other APIs
+    if (conflict) {
+      debug('API already exists', conflict);
+      return res.status(409).send({
+        code: 0,
+        message: `Dummy API Server: API path conflicts with ${conflict.method} ${conflict.path}`
+      });
+    }
+
+    // update db
+    const newAPI = dbAPIs.push(body)
+      .write();
+
+    // update router
+    router.apis = dbAPIs.cloneDeep().value();
+    router.updatePatterns();
+
+    res.send({
+      code: 200,
+      message: 'Dummy API Server: Create API successfully',
+      data: newAPI
+    });
+  });
 
 app.route(`${DS_PREFIX}/apis/:apiID`)
   // update api
@@ -68,12 +108,12 @@ app.route(`${DS_PREFIX}/apis/:apiID`)
       (body.method && body.method !== api.method)
     ) {
       debug('API path changed', api.path, '=>', body.path);
-      // assign normalized path
+      // check normalized path
       body.normalizedPath = normalizePath(body.path);
-      const conflict = db.get('apis')
+      const conflict = dbAPIs
         .find({
           method: body.method,
-          normalizedPath: body.normalizedPath
+          normalizedPath: body.normalizedPath,
         })
         .value();
 
