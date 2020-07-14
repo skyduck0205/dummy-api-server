@@ -84,6 +84,13 @@ function ApiList() {
     console.log(rowData);
   };
 
+  const onEditModalClose = (data) => {
+    if (data) {
+      listAPIsFetch();
+    }
+    setIsEditModalOpen(false);
+  };
+
   return (
     <>
       <MaterialTable
@@ -167,8 +174,8 @@ function ApiList() {
       <ApiEditModal
         open={isEditModalOpen}
         data={selectedAPI}
-        onOk={(value) => console.log('onOk', value)}
-        onCancel={() => setIsEditModalOpen(false)}
+        onOk={(data) => onEditModalClose(data)}
+        onCancel={() => onEditModalClose()}
       />
 
       <Tooltip title="Add API">
