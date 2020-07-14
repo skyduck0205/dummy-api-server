@@ -13,6 +13,7 @@ import useToast from 'hooks/useToast';
 import api from 'services/api';
 import HttpStatus from 'components/HttpStatus';
 import ApiEditModal from 'App/ApiEditModal';
+import ApiDeleteModal from 'App/ApiDeleteModal';
 
 const useStyles = makeStyles((theme) => ({
   actions: {
@@ -31,6 +32,7 @@ function ApiList() {
   const [apis, setAPIs] = React.useState([]);
   const [selectedAPI, setSelectedAPI] = React.useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
 
   const classes = useStyles();
   const toast = useToast();
@@ -44,7 +46,7 @@ function ApiList() {
 
   React.useEffect(() => {
     listAPIsFetch();
-  }, [listAPIsFetch]);
+  }, []);
 
   React.useEffect(() => {
     if (updateAPIResponseStatus.data) {
@@ -54,18 +56,16 @@ function ApiList() {
     if (updateAPIResponseStatus.error) {
       toast.error(updateAPIResponseStatus.error.message);
     }
-  }, [
-    updateAPIResponseStatus.data,
-    updateAPIResponseStatus.error,
-    listAPIsFetch,
-    toast,
-  ]);
+  }, [updateAPIResponseStatus.data, updateAPIResponseStatus.error]);
 
   React.useEffect(() => {
     if (listAPIsStatus.data) {
       setAPIs(listAPIsStatus.data.data);
     }
-  }, [listAPIsStatus.data]);
+    if (listAPIsStatus.error) {
+      toast.error(listAPIsStatus.error.message);
+    }
+  }, [listAPIsStatus.data, listAPIsStatus.error]);
 
   const onResponseSelect = (apiID, currentResponseID) => {
     updateAPIResponseFetch(apiID, { currentResponseID });
@@ -81,7 +81,8 @@ function ApiList() {
   };
 
   const onDeleteClick = (rowData) => {
-    console.log(rowData);
+    setSelectedAPI(rowData);
+    setIsDeleteModalOpen(true);
   };
 
   const onEditModalClose = (data) => {
@@ -89,6 +90,13 @@ function ApiList() {
       listAPIsFetch();
     }
     setIsEditModalOpen(false);
+  };
+
+  const onDeleteModalClose = (data) => {
+    if (data) {
+      listAPIsFetch();
+    }
+    setIsDeleteModalOpen(false);
   };
 
   return (
@@ -176,6 +184,13 @@ function ApiList() {
         data={selectedAPI}
         onOk={(data) => onEditModalClose(data)}
         onCancel={() => onEditModalClose()}
+      />
+
+      <ApiDeleteModal
+        open={isDeleteModalOpen}
+        data={selectedAPI}
+        onOk={(data) => onDeleteModalClose(data)}
+        onCancel={() => onDeleteModalClose()}
       />
 
       <Tooltip title="Add API">
