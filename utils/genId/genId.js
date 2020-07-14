@@ -1,3 +1,3 @@
-export default function genId() {
+module.exports = function genId() {
   return Date.now().toString(36);
 }

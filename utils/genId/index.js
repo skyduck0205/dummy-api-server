@@ -1,1 +1,1 @@
-export { default } from './genId';
+module.exports = require('./genId');
