@@ -2,8 +2,10 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const debug = require('debug')('ds:app');
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
+const normalizePath = require('../utils/normalizePath');
 const DummyRouter = require('./dummy-router');
 
 const DB = path.join(__dirname, process.env.DB || '../db/db.json');
@@ -37,22 +39,50 @@ app.use(express.static(PUBLIC_PATH));
  * Dummy Server APIs
  */
 app.route(`${DS_PREFIX}/apis`)
-  .get((req, res) => res.send({ // get api list
+  // get api list
+  .get((req, res) => res.send({
     code: 1,
     message: 'Dummy API Server: List API successfully',
     data: db.get('apis').value()
   }));
 
 app.route(`${DS_PREFIX}/apis/:apiID`)
-  .patch((req, res) => { // update api current response
+  // update api
+  .patch((req, res) => {
     const { params, body } = req;
 
+    // check if api exists
     const api = db.get('apis').find({ id: params.apiID });
     if (!api.value()) {
       return res.status(404).send({
         code: 0,
         message: 'Dummy API Server: API not found!'
       });
+    }
+
+    // if api path or method is changed
+    if (
+      (body.path && body.path !== api.path) ||
+      (body.method && body.method !== api.method)
+    ) {
+      debug('API path changed', api.path, '=>', body.path);
+      // assign normalized path
+      body.normalizedPath = normalizePath(body.path);
+      const conflict = db.get('apis')
+        .find({
+          method: body.method,
+          normalizedPath: body.normalizedPath
+        })
+        .value();
+
+      // 409 if has conflict with other APIs
+      if (conflict) {
+        debug('API already exists', conflict);
+        return res.status(409).send({
+          code: 0,
+          message: `Dummy API Server: API path conflicts with ${conflict.method} ${conflict.path}`
+        });
+      }
     }
 
     api.assign(body)
