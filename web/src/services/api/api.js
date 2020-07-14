@@ -17,9 +17,19 @@ export async function listAPIs() {
   }
 }
 
-export async function updateAPI(apiID, api) {
+export async function updateAPI(apiID, data) {
   try {
-    return await axios.patch(`/_ds/apis/${apiID}`, api);
+    return await axios.patch(`/_ds/apis/${apiID}`, data);
+  } catch (error) {
+    throw new ApiResponseError({
+      message: _get(error, 'message', ''),
+    });
+  }
+}
+
+export async function deleteAPI(apiID) {
+  try {
+    return await axios.delete(`/_ds/apis/${apiID}`);
   } catch (error) {
     throw new ApiResponseError({
       message: _get(error, 'message', ''),
