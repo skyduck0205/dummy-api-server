@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { get as _get } from 'lodash';
+import _get from 'lodash/get';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -58,6 +58,7 @@ function ApiEditModal({ open, data, onOk, onCancel }) {
   const classes = useStyles();
   const toast = useToast();
   const [updateAPIStatus, updateAPIFetch] = useApi(api.updateAPI);
+  const [createAPIStatus, createAPIFetch] = useApi(api.createAPI);
 
   React.useEffect(() => {
     if (open) {
@@ -85,6 +86,16 @@ function ApiEditModal({ open, data, onOk, onCancel }) {
       toast.error(updateAPIStatus.error.message);
     }
   }, [updateAPIStatus.data, updateAPIStatus.error]);
+
+  React.useEffect(() => {
+    if (createAPIStatus.data) {
+      toast.success(createAPIStatus.data.message);
+      onOk(createAPIStatus.data);
+    }
+    if (createAPIStatus.error) {
+      toast.error(createAPIStatus.error.message);
+    }
+  }, [createAPIStatus.data, createAPIStatus.error]);
 
   const onFormChange = (key, value) => {
     setForm({
@@ -158,7 +169,11 @@ function ApiEditModal({ open, data, onOk, onCancel }) {
   };
 
   const onOkClick = () => {
-    updateAPIFetch(form.id, form);
+    if (data) {
+      updateAPIFetch(form.id, form);
+    } else {
+      createAPIFetch(form);
+    }
   };
 
   return (
