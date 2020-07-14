@@ -40,7 +40,7 @@ function ApiList() {
   });
 
   const [updateAPIResponseStatus, updateAPIResponseFetch] = useApi(
-    api.updateAPIResponse
+    api.updateAPI
   );
 
   React.useEffect(() => {
@@ -59,20 +59,22 @@ function ApiList() {
         variant: 'error',
       });
     }
-  }, [updateAPIResponseStatus, listAPIsFetch, enqueueSnackbar]);
+  }, [
+    updateAPIResponseStatus.data,
+    updateAPIResponseStatus.error,
+    listAPIsFetch,
+    enqueueSnackbar,
+  ]);
 
   React.useEffect(() => {
     if (listAPIsStatus.data) {
       setAPIs(listAPIsStatus.data.data);
     }
-  }, [listAPIsStatus]);
+  }, [listAPIsStatus.data]);
 
-  const onResponseSelect = React.useCallback(
-    (apiID, responseID) => {
-      updateAPIResponseFetch(apiID, responseID);
-    },
-    [updateAPIResponseFetch]
-  );
+  const onResponseSelect = (apiID, currentResponseID) => {
+    updateAPIResponseFetch(apiID, { currentResponseID });
+  };
 
   const onEditClick = (rowData) => {
     setSelectedAPI(rowData);
