@@ -81,7 +81,8 @@ function ApiResponseEditor({
           <Box flex="none">
             <TextField
               fullWidth
-              id="das-response-status"
+              id={`das-response-status-${response.id}`}
+              name="das-response-status"
               label="Status"
               size="small"
               type="number"
@@ -97,7 +98,8 @@ function ApiResponseEditor({
           <Box flex={1} ml={2}>
             <TextField
               fullWidth
-              id="das-response-name"
+              id={`das-response-name-${response.id}`}
+              name="das-response-name"
               label="Name"
               size="small"
               value={response.name}

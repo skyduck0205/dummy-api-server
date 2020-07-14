@@ -178,6 +178,7 @@ function ApiEditModal({ open, api, onOk, onCancel }) {
                 fullWidth
                 required
                 id="das-api-path"
+                name="das-api-path"
                 label="Path"
                 size="small"
                 margin="normal"
@@ -191,6 +192,7 @@ function ApiEditModal({ open, api, onOk, onCancel }) {
               <TextField
                 fullWidth
                 id="das-api-description"
+                name="das-api-description"
                 label="Description"
                 size="small"
                 margin="normal"
