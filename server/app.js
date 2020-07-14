@@ -52,8 +52,10 @@ app.route(`${DS_PREFIX}/apis/:apiID`)
     const { params, body } = req;
 
     // check if api exists
-    const api = db.get('apis').find({ id: params.apiID });
-    if (!api.value()) {
+    const dbAPIs = db.get('apis');
+    const dbAPI = dbAPIs.find({ id: params.apiID });
+    const api = dbAPI.value();
+    if (!api) {
       return res.status(404).send({
         code: 0,
         message: 'Dummy API Server: API not found!'
@@ -85,13 +87,46 @@ app.route(`${DS_PREFIX}/apis/:apiID`)
       }
     }
 
-    api.assign(body)
+    // update db
+    dbAPI.assign(body)
       .write();
+
+    // update router
+    router.apis = dbAPIs.cloneDeep().value();
+    router.updatePatterns();
 
     res.send({
       code: 1,
       message: 'Dummy API Server: Patch API successfully',
-      data: api.value()
+      data: api
+    });
+  })
+  // delete api
+  .delete((req, res) => {
+    const { params, body } = req;
+
+    // check if api exists
+    const dbAPIs = db.get('apis');
+    const api = dbAPIs.find({ id: params.apiID }).value();
+    if (!api) {
+      return res.status(404).send({
+        code: 0,
+        message: 'Dummy API Server: API not found!'
+      });
+    }
+
+    // update db
+    dbAPIs.remove({ id: params.apiID })
+      .write();
+
+    // update router
+    router.apis = dbAPIs.cloneDeep().value();
+    router.updatePatterns();
+
+    res.send({
+      code: 200,
+      message: 'Dummy API Server: Delete API successfully',
+      data: api
     });
   });
 
