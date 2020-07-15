@@ -12,6 +12,11 @@ import HttpStatus from 'components/HttpStatus';
 import JsonEditor from 'components/JsonEditor';
 
 const useStyles = makeStyles((theme) => ({
+  panel: {
+    '&:not(:first-child)': {
+      marginTop: -1,
+    },
+  },
   summary: {
     alignItems: 'center',
     margin: 0,
@@ -51,6 +56,7 @@ function ApiResponseEditor({
 
   return (
     <ExpansionPanel
+      className={classes.panel}
       key={response.id}
       variant="outlined"
       square
