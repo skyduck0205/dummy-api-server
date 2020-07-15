@@ -1,6 +1,6 @@
 import React from 'react';
 import MaterialTable from 'material-table';
-import { makeStyles } from '@material-ui/core/styles';
+import { useTheme, makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -26,6 +26,9 @@ const useStyles = makeStyles((theme) => ({
     bottom: theme.spacing(2),
     right: theme.spacing(2),
   },
+  disabledRow: {
+    backgroundColor: theme.palette.disabled,
+  },
 }));
 
 function ApiList() {
@@ -34,29 +37,28 @@ function ApiList() {
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
 
+  const theme = useTheme();
   const classes = useStyles();
   const toast = useToast();
 
   const [listAPIsStatus, listAPIsFetch] = useApi(api.listAPIs, {
     isLoading: true,
   });
-  const [updateAPIResponseStatus, updateAPIResponseFetch] = useApi(
-    api.updateAPI
-  );
+  const [updateAPIStatus, updateAPIFetch] = useApi(api.updateAPI);
 
   React.useEffect(() => {
     listAPIsFetch();
   }, []);
 
   React.useEffect(() => {
-    if (updateAPIResponseStatus.data) {
-      toast.success(updateAPIResponseStatus.data.message);
+    if (updateAPIStatus.data) {
+      toast.success(updateAPIStatus.data.message);
       listAPIsFetch();
     }
-    if (updateAPIResponseStatus.error) {
-      toast.error(updateAPIResponseStatus.error.message);
+    if (updateAPIStatus.error) {
+      toast.error(updateAPIStatus.error.message);
     }
-  }, [updateAPIResponseStatus.data, updateAPIResponseStatus.error]);
+  }, [updateAPIStatus.data, updateAPIStatus.error]);
 
   React.useEffect(() => {
     if (listAPIsStatus.data) {
@@ -68,7 +70,7 @@ function ApiList() {
   }, [listAPIsStatus.data, listAPIsStatus.error]);
 
   const onResponseSelect = (apiID, currentResponseID) => {
-    updateAPIResponseFetch(apiID, { currentResponseID });
+    updateAPIFetch(apiID, { currentResponseID });
   };
 
   const onEditClick = (rowData) => {
@@ -83,6 +85,10 @@ function ApiList() {
       id: null,
     });
     setIsEditModalOpen(true);
+  };
+
+  const onVisibilityClick = (rowData) => {
+    updateAPIFetch(rowData.id, { disabled: !rowData.disabled });
   };
 
   const onDeleteClick = (rowData) => {
@@ -108,9 +114,7 @@ function ApiList() {
     <>
       <MaterialTable
         title="API lists"
-        isLoading={
-          listAPIsStatus.isLoading || updateAPIResponseStatus.isLoading
-        }
+        isLoading={listAPIsStatus.isLoading || updateAPIStatus.isLoading}
         columns={[
           {
             title: 'Method',
@@ -127,6 +131,8 @@ function ApiList() {
           },
           {
             title: 'Response',
+            sorting: false,
+            searchable: false,
             render: (rowData) => (
               <Select
                 value={rowData.currentResponseID}
@@ -153,6 +159,7 @@ function ApiList() {
           {
             title: 'Actions',
             sorting: false,
+            searchable: false,
             render: (rowData) => (
               <Box className={classes.actions}>
                 <Tooltip title="Edit API">
@@ -163,6 +170,18 @@ function ApiList() {
                 <Tooltip title="Copy API">
                   <IconButton size="small" onClick={() => onCopyClick(rowData)}>
                     <Icon fontSize="small">file_copy</Icon>
+                  </IconButton>
+                </Tooltip>
+                <Tooltip
+                  title={rowData.disabled ? 'Enable API' : 'Disable API'}
+                >
+                  <IconButton
+                    size="small"
+                    onClick={() => onVisibilityClick(rowData)}
+                  >
+                    <Icon fontSize="small">
+                      {rowData.disabled ? 'visibility' : 'visibility_off'}
+                    </Icon>
                   </IconButton>
                 </Tooltip>
                 <Tooltip title="Delete API">
@@ -180,7 +199,21 @@ function ApiList() {
         data={apis}
         options={{
           paging: false,
+          tableLayout: 'fixed',
           headerStyle: { fontSize: 'initial' },
+          rowStyle: (rowData) =>
+            rowData.disabled && {
+              color: theme.palette.text.disabled,
+              backgroundColor: theme.palette.action.disabledBackground,
+            },
+          searchFieldStyle: {
+            width: 360,
+          },
+        }}
+        localization={{
+          toolbar: {
+            searchPlaceholder: 'Search by method, path, description',
+          },
         }}
       />
 
