@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ModalFooter({ onOkClick, onCancelClick }) {
+function ModalFooter({ isOkDisabled, onOkClick, onCancelClick }) {
   const classes = useStyles();
   return (
     <Box
@@ -23,7 +23,12 @@ function ModalFooter({ onOkClick, onCancelClick }) {
       justifyContent="flex-end"
     >
       <Button onClick={onCancelClick}>Cancel</Button>
-      <Button variant="contained" color="primary" onClick={onOkClick}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={onOkClick}
+        disabled={isOkDisabled}
+      >
         Ok
       </Button>
     </Box>
@@ -31,10 +36,12 @@ function ModalFooter({ onOkClick, onCancelClick }) {
 }
 
 ModalFooter.propTypes = {
+  isOkDisabled: PropTypes.bool,
   onOkClick: PropTypes.func,
   onCancelClick: PropTypes.func,
 };
 ModalFooter.defaultProps = {
+  isOkDisabled: false,
   onOkClick: () => {},
   onCancelClick: () => {},
 };
