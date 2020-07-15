@@ -11,6 +11,7 @@ import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
 import ModalHeader from 'components/ModalHeader';
@@ -96,6 +97,10 @@ function ApiEditModal({ open, data, onOk, onCancel }) {
       toast.error(createAPIStatus.error.message);
     }
   }, [createAPIStatus.data, createAPIStatus.error]);
+
+  const isPathValid = !!form.path.length;
+  const isResponsesValid = !!form.responses.length;
+  const isFormValid = isPathValid && isResponsesValid;
 
   const onFormChange = (key, value) => {
     setForm({
@@ -213,6 +218,7 @@ function ApiEditModal({ open, data, onOk, onCancel }) {
                 size="small"
                 margin="normal"
                 value={form.path}
+                error={!isPathValid}
                 onChange={(e) => onFormChange('path', e.target.value)}
                 placeholder="API path e.g. /api/user/:userId"
                 helperText="API path with method should be unique and not empty."
@@ -231,7 +237,14 @@ function ApiEditModal({ open, data, onOk, onCancel }) {
                 placeholder="API description"
               />
               <FormControl margin="normal" fullWidth required>
-                <FormLabel component="legend">Responses</FormLabel>
+                <FormLabel component="legend" error={!isResponsesValid}>
+                  Responses
+                </FormLabel>
+                {!isResponsesValid && (
+                  <FormHelperText error>
+                    Should have at least one response.
+                  </FormHelperText>
+                )}
                 <Box my={1}>
                   {form.responses.map((response, index) => (
                     <ApiResponseEditor
@@ -259,7 +272,11 @@ function ApiEditModal({ open, data, onOk, onCancel }) {
             </Box>
 
             {/* modal footer */}
-            <ModalFooter onOkClick={onOkClick} onCancelClick={onCancel} />
+            <ModalFooter
+              isOkDisabled={!isFormValid}
+              onOkClick={onOkClick}
+              onCancelClick={onCancel}
+            />
           </Paper>
         </Container>
       </Fade>
