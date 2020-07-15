@@ -10,7 +10,7 @@ const genId = require('../utils/genId');
 const DummyRouter = require('./dummy-router');
 
 const DB = path.join(__dirname, process.env.DB || '../db/db.json');
-const PUBLIC_PATH = path.join(__dirname, '../public');
+const PUBLIC_PATH = path.join(__dirname, '../web/build');
 const DS_PREFIX = process.env.DS_PREFIX || '/_ds';
 
 const app = express();
