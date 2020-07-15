@@ -26,8 +26,19 @@ const useStyles = makeStyles((theme) => ({
     bottom: theme.spacing(2),
     right: theme.spacing(2),
   },
+  table: {
+    '& th:first-child': {
+      width: '90px !important',
+    },
+    '& th:last-child': {
+      width: '128px !important',
+    },
+  },
   disabledRow: {
     backgroundColor: theme.palette.disabled,
+  },
+  response: {
+    width: '100%',
   },
 }));
 
@@ -112,110 +123,119 @@ function ApiList() {
 
   return (
     <>
-      <MaterialTable
-        title="API lists"
-        isLoading={listAPIsStatus.isLoading || updateAPIStatus.isLoading}
-        columns={[
-          {
-            title: 'Method',
-            field: 'method',
-            cellStyle: { fontSize: 'initial' },
-          },
-          {
-            title: 'API Path',
-            field: 'path',
-            cellStyle: {
-              fontSize: 'initial',
-              fontFamily: 'monospace',
+      <div className={classes.table}>
+        <MaterialTable
+          title="API lists"
+          isLoading={listAPIsStatus.isLoading || updateAPIStatus.isLoading}
+          columns={[
+            {
+              title: 'Method',
+              field: 'method',
+              cellStyle: { fontSize: 'initial' },
             },
-          },
-          {
-            title: 'Response',
-            sorting: false,
-            searchable: false,
-            render: (rowData) => (
-              <Select
-                value={rowData.currentResponseID}
-                onChange={(e) => onResponseSelect(rowData.id, e.target.value)}
-              >
-                {rowData.responses.map((response) => (
-                  <MenuItem key={response.id} value={response.id}>
-                    <HttpStatus
-                      key={response.id}
-                      status={response.status}
-                      mr={1}
-                    />
-                    {response.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            ),
-          },
-          {
-            title: 'Description',
-            field: 'description',
-            cellStyle: { fontSize: 'initial' },
-          },
-          {
-            title: 'Actions',
-            sorting: false,
-            searchable: false,
-            render: (rowData) => (
-              <Box className={classes.actions}>
-                <Tooltip title="Edit API">
-                  <IconButton size="small" onClick={() => onEditClick(rowData)}>
-                    <Icon fontSize="small">edit</Icon>
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Copy API">
-                  <IconButton size="small" onClick={() => onCopyClick(rowData)}>
-                    <Icon fontSize="small">file_copy</Icon>
-                  </IconButton>
-                </Tooltip>
-                <Tooltip
-                  title={rowData.disabled ? 'Enable API' : 'Disable API'}
+            {
+              title: 'API Path',
+              field: 'path',
+              cellStyle: {
+                fontSize: 16,
+                fontFamily: 'monospace',
+              },
+            },
+            {
+              title: 'Description',
+              field: 'description',
+              cellStyle: { fontSize: 'initial' },
+            },
+            {
+              title: 'Response',
+              sorting: false,
+              searchable: false,
+              render: (rowData) => (
+                <Select
+                  className={classes.response}
+                  value={rowData.currentResponseID}
+                  onChange={(e) => onResponseSelect(rowData.id, e.target.value)}
                 >
-                  <IconButton
-                    size="small"
-                    onClick={() => onVisibilityClick(rowData)}
-                  >
-                    <Icon fontSize="small">
-                      {rowData.disabled ? 'visibility' : 'visibility_off'}
-                    </Icon>
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Delete API">
-                  <IconButton
-                    size="small"
-                    onClick={() => onDeleteClick(rowData)}
-                  >
-                    <Icon fontSize="small">delete</Icon>
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            ),
-          },
-        ]}
-        data={apis}
-        options={{
-          paging: false,
-          tableLayout: 'fixed',
-          headerStyle: { fontSize: 'initial' },
-          rowStyle: (rowData) =>
-            rowData.disabled && {
-              color: theme.palette.text.disabled,
-              backgroundColor: theme.palette.action.disabledBackground,
+                  {rowData.responses.map((response) => (
+                    <MenuItem key={response.id} value={response.id}>
+                      <HttpStatus
+                        key={response.id}
+                        status={response.status}
+                        mr={1}
+                      />
+                      {response.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              ),
             },
-          searchFieldStyle: {
-            width: 360,
-          },
-        }}
-        localization={{
-          toolbar: {
-            searchPlaceholder: 'Search by method, path, description',
-          },
-        }}
-      />
+            {
+              title: 'Actions',
+              sorting: false,
+              searchable: false,
+              render: (rowData) => (
+                <Box className={classes.actions}>
+                  <Tooltip title="Edit API">
+                    <IconButton
+                      size="small"
+                      onClick={() => onEditClick(rowData)}
+                    >
+                      <Icon fontSize="small">edit</Icon>
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Copy API">
+                    <IconButton
+                      size="small"
+                      onClick={() => onCopyClick(rowData)}
+                    >
+                      <Icon fontSize="small">file_copy</Icon>
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip
+                    title={rowData.disabled ? 'Enable API' : 'Disable API'}
+                  >
+                    <IconButton
+                      size="small"
+                      onClick={() => onVisibilityClick(rowData)}
+                    >
+                      <Icon fontSize="small">
+                        {rowData.disabled ? 'visibility' : 'visibility_off'}
+                      </Icon>
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Delete API">
+                    <IconButton
+                      size="small"
+                      onClick={() => onDeleteClick(rowData)}
+                    >
+                      <Icon fontSize="small">delete</Icon>
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              ),
+            },
+          ]}
+          data={apis}
+          options={{
+            paging: false,
+            tableLayout: 'fixed',
+            headerStyle: { fontSize: 'initial' },
+            rowStyle: (rowData) =>
+              rowData.disabled && {
+                color: theme.palette.text.disabled,
+                backgroundColor: theme.palette.action.disabledBackground,
+              },
+            searchFieldStyle: {
+              width: 360,
+            },
+          }}
+          localization={{
+            toolbar: {
+              searchPlaceholder: 'Search by method, path, description',
+            },
+          }}
+        />
+      </div>
 
       <ApiEditModal
         open={isEditModalOpen}
