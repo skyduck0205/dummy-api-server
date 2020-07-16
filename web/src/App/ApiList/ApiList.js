@@ -27,12 +27,12 @@ const useStyles = makeStyles((theme) => ({
     right: theme.spacing(2),
   },
   table: {
-    '& th:first-child': {
-      width: '90px !important',
-    },
-    '& th:last-child': {
-      width: '128px !important',
-    },
+    '& th:first-child': { width: '140px !important' },
+    '& th:nth-child(2)': { width: '40% !important' },
+    '& th:nth-child(3)': { width: '40% !important' },
+    '& th:nth-child(4)': { width: '20% !important' },
+    '& th:last-child': { width: '180px !important' },
+    '& td': { wordBreak: 'break-word' },
   },
   disabledRow: {
     backgroundColor: theme.palette.disabled,
@@ -173,6 +173,8 @@ function ApiList() {
               title: 'Actions',
               sorting: false,
               searchable: false,
+              headerStyle: { textAlign: 'right' },
+              cellStyle: { textAlign: 'right' },
               render: (rowData) => (
                 <Box className={classes.actions}>
                   <Tooltip title="Edit API">
