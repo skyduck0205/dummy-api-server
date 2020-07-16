@@ -30,12 +30,19 @@ class DummyRouter {
    */
   getMatchedAPI(method, path, query) {
     const matchedPatterns = this.getMatchedPatterns(path, query);
-    const matchedAPIs = _(this.apis)
-      .filter({ disabled: false, method }) // filter available API with same method
-      .intersectionBy(matchedPatterns, 'path') // filter by matched patterns
-      .value();
-    debug('matchedAPIs:', _.map(matchedAPIs, 'path'));
-    return matchedAPIs[0];
+    let matchedAPI;
+    _.forEach(matchedPatterns, pattern => {
+      // filter available API with same method and path
+      matchedAPI = _.find(this.apis, {
+        disabled: false,
+        method,
+        path: pattern.path
+      });
+      // break lodash forEach if api found
+      return !matchedAPI;
+    })
+    debug('matchedAPI:', matchedAPI && matchedAPI.path);
+    return matchedAPI;
   }
 
   /**
@@ -45,13 +52,15 @@ class DummyRouter {
    * @returns {Pattern[]} - matched patterns
    */
   getMatchedPatterns(path, query) {
-    return _(this.patterns)
+    const matchedPatterns = _(this.patterns)
       .filter((pattern) => pattern.match(path, query)) // filter matched patterns
       .orderBy(
         ['urlParamsLength', 'strictQueryParamsLength', 'looseQueryParamsLength'],
         ['asc', 'desc', 'desc']
       )
       .value();
+    debug('matchedPatterns:', _.map(matchedPatterns, 'path'));
+    return matchedPatterns;
   }
 
   /**

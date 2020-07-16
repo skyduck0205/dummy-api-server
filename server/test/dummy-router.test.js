@@ -198,6 +198,18 @@ describe('DummyRouter', () => {
       assert.equal(api, apis[1]);
     });
 
+    it('filter APIs by intersection of patterns paths and apis paths with order of matched api', () => {
+      const apis = [
+        { method: 'GET', path: '/api/20', disabled: false },
+        { method: 'GET', path: '/api/2', disabled: false },
+        { method: 'GET', path: '/api/1', disabled: false },
+        { method: 'GET', path: '/api/30', disabled: false }
+      ];
+      const dp = new DummyRouter(apis);
+      const api = dp.getMatchedAPI('GET', '', {});
+      assert.equal(api, apis[2]);
+    });
+
     it('return first matched API', () => {
       const apis = [
         { method: 'GET', path: '/api/0', disabled: false },
