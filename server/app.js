@@ -57,6 +57,7 @@ app.route(`${DS_PREFIX}/apis`)
 
     // check normalized path
     body.id = genId();
+    body.disabled = false;
     body.normalizedPath = normalizePath(body.path);
     const conflict = dbAPIs
       .find({
