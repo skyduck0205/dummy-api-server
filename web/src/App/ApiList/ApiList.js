@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
     '& th:nth-child(4)': { width: '20% !important' },
     '& th:last-child': { width: '180px !important' },
     '& td': { wordBreak: 'break-word' },
+    '& .MuiToolbar-root': { padding: '0 16px' },
   },
   disabledRow: {
     backgroundColor: theme.palette.disabled,
