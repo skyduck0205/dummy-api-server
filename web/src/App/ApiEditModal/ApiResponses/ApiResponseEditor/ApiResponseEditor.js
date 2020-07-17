@@ -73,10 +73,10 @@ function ApiResponseEditor({
         )}
         {/* actions */}
         <Box ml="auto">
-          <IconButton size="small" onClick={(e) => onResponseCopyClick(e)}>
+          <IconButton size="small" onClick={onResponseCopyClick}>
             <Icon fontSize="inherit">file_copy</Icon>
           </IconButton>
-          <IconButton size="small" onClick={(e) => onResponseDeleteClick(e)}>
+          <IconButton size="small" onClick={onResponseDeleteClick}>
             <Icon fontSize="inherit">delete</Icon>
           </IconButton>
         </Box>
