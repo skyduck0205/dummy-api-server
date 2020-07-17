@@ -2,8 +2,6 @@ import React from 'react';
 import MaterialTable from 'material-table';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
 import IconButton from '@material-ui/core/IconButton';
 import Icon from '@material-ui/core/Icon';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -11,7 +9,7 @@ import Fab from '@material-ui/core/Fab';
 import useApi from 'hooks/useApi';
 import useToast from 'hooks/useToast';
 import api from 'services/api';
-import HttpStatus from 'components/HttpStatus';
+import ResponseSelector from 'components/ResponseSelector';
 import ApiEditModal from 'App/ApiEditModal';
 import ApiDeleteModal from 'App/ApiDeleteModal';
 
@@ -151,22 +149,12 @@ function ApiList() {
               sorting: false,
               searchable: false,
               render: (rowData) => (
-                <Select
+                <ResponseSelector
                   className={classes.response}
+                  responses={rowData.responses}
                   value={rowData.currentResponseID}
                   onChange={(e) => onResponseSelect(rowData.id, e.target.value)}
-                >
-                  {rowData.responses.map((response) => (
-                    <MenuItem key={response.id} value={response.id}>
-                      <HttpStatus
-                        key={response.id}
-                        status={response.status}
-                        mr={1}
-                      />
-                      {response.name}
-                    </MenuItem>
-                  ))}
-                </Select>
+                />
               ),
             },
             {
