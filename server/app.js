@@ -122,7 +122,7 @@ app.route(`${DS_PREFIX}/apis/:apiID`)
         .value();
 
       // 409 if has conflict with other APIs
-      if (conflict) {
+      if (conflict && conflict.id !== params.apiID) {
         debug('API already exists', conflict);
         return res.status(409).send({
           code: 0,
