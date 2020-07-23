@@ -7,6 +7,16 @@ axios.interceptors.response.use(
   (error) => Promise.reject(error.response && error.response.data)
 );
 
+export async function getConfig() {
+  try {
+    return await axios.get('/_ds/config');
+  } catch (error) {
+    throw new ApiResponseError({
+      message: _get(error, 'message', ''),
+    });
+  }
+}
+
 export async function listAPIs() {
   try {
     return await axios.get('/_ds/apis');
