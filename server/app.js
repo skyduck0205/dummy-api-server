@@ -10,6 +10,7 @@ const genId = require('../utils/genId');
 const DummyRouter = require('./dummy-router');
 
 const DB = path.join(__dirname, process.env.DB || '../db/db.json');
+const DB_NAME = path.basename(DB);
 const PUBLIC_PATH = path.join(__dirname, '../web/build');
 const DS_PREFIX = process.env.DS_PREFIX || '/_ds';
 
@@ -41,6 +42,15 @@ app.use(express.static(PUBLIC_PATH));
  */
 app.route(`${DS_PREFIX}/db`)
   .get((req, res) => res.send(db.value()));
+
+app.route(`${DS_PREFIX}/config`)
+  .get((req, res) => res.send({
+    code: 1,
+    message: 'Dummy API Server: Get config successfully',
+    data: {
+      name: DB_NAME
+    }
+  }));
 
 app.route(`${DS_PREFIX}/apis`)
   // get api list
