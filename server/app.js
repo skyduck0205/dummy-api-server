@@ -4,6 +4,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const debug = require('debug')('ds:app');
+const _ = require('lodash');
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 const normalizePath = require('../utils/normalizePath');
@@ -21,7 +22,7 @@ const app = express();
  * Initialize DB
  */
 const db = low(new FileSync(DB));
-db.defaults({ apis: [] })
+db.defaults({ config: { name: DB_NAME, delay: 0 }, apis: [] })
   .write();
 
 /**
@@ -49,10 +50,22 @@ app.route(`${DS_PREFIX}/config`)
   .get((req, res) => res.send({
     code: 1,
     message: 'Dummy API Server: Get config successfully',
-    data: {
-      name: DB_NAME
-    }
-  }));
+    data: db.get('config').value()
+  }))
+  .patch((req, res) => {
+    const { body } = req;
+    const dbConfig = db.get('config');
+
+    // update db
+    dbConfig.assign(body)
+      .write();
+
+    res.send({
+      code: 1,
+      message: 'Dummy API Server: Patch config successfully',
+      data: dbConfig.value()
+    });
+  });
 
 app.route(`${DS_PREFIX}/apis`)
   // get api list
@@ -199,7 +212,10 @@ app.all('*', (req, res) => {
       message: 'Dummy API Server: API not found!'
     });
   }
-  res.status(response.status).send(response.body);
+  const delay = db.get('config.delay').value();
+  setTimeout(() => {
+    res.status(response.status).send(response.body);
+  }, _.isInteger(delay) ? delay : 0);
 });
 
 module.exports = app;
