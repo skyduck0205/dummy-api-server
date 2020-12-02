@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Box from '@material-ui/core/Box';
@@ -11,30 +10,11 @@ import ModalHeader from 'components/ModalHeader';
 import ModalFooter from 'components/ModalFooter';
 import useApi from 'hooks/useApi';
 import useToast from 'hooks/useToast';
+import useModalStyles from 'hooks/useModalStyles';
 import api from 'services/api';
 
-const useStyles = makeStyles((theme) => ({
-  modal: {
-    display: 'flex',
-    alignItems: 'start',
-    justifyContent: 'center',
-    margin: theme.spacing(5, 'auto'),
-  },
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100%',
-    outline: 'none',
-  },
-  paper: {
-    display: 'flex',
-    flexDirection: 'column',
-    maxHeight: '100%',
-  },
-}));
-
 function ApiDeleteModal({ open, data, onOk, onCancel }) {
-  const classes = useStyles();
+  const classes = useModalStyles();
   const toast = useToast();
   const [deleteAPIStatus, deleteAPIFetch] = useApi(api.deleteAPI);
 
