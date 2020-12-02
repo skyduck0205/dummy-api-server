@@ -17,6 +17,16 @@ export async function getConfig() {
   }
 }
 
+export async function updateConfig(config) {
+  try {
+    return await axios.patch('/_ds/config', config);
+  } catch (error) {
+    throw new ApiResponseError({
+      message: _get(error, 'message', ''),
+    });
+  }
+}
+
 export async function listAPIs() {
   try {
     return await axios.get('/_ds/apis');
