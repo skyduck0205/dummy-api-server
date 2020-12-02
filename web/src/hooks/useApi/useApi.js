@@ -11,7 +11,7 @@ import { useState, useCallback, useRef } from 'react';
 export default function useApi(api, defaultStatus = {}) {
   const [apiStatus, setApiStatus] = useState({
     isLoading: false,
-    data: null,
+    response: null,
     error: null,
     ...defaultStatus,
   });
@@ -33,12 +33,12 @@ export default function useApi(api, defaultStatus = {}) {
       });
 
       try {
-        const data = await api(...args);
+        const response = await api(...args);
         // Drop non-latest calls and set response
         if (callId === lastCallIdRef.current) {
           setApiStatus({
             isLoading: false,
-            data,
+            response,
             error: null,
           });
         }
@@ -47,7 +47,7 @@ export default function useApi(api, defaultStatus = {}) {
         if (callId === lastCallIdRef.current) {
           setApiStatus({
             isLoading: false,
-            data: null,
+            response: null,
             error,
           });
         }

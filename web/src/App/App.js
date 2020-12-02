@@ -48,11 +48,10 @@ function App() {
   }, []);
 
   React.useEffect(() => {
-    console.log('getConfigStatus', getConfigStatus.data);
-    if (getConfigStatus.data) {
-      setConfig(getConfigStatus.data.data);
+    if (getConfigStatus.response) {
+      setConfig(getConfigStatus.response.data);
     }
-  }, [getConfigStatus.data]);
+  }, [getConfigStatus.response]);
 
   return (
     <ThemeProvider theme={theme}>

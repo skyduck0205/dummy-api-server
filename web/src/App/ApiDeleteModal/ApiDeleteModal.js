@@ -39,14 +39,14 @@ function ApiDeleteModal({ open, data, onOk, onCancel }) {
   const [deleteAPIStatus, deleteAPIFetch] = useApi(api.deleteAPI);
 
   React.useEffect(() => {
-    if (deleteAPIStatus.data) {
-      toast.success(deleteAPIStatus.data.message);
-      onOk(deleteAPIStatus.data);
+    if (deleteAPIStatus.response) {
+      toast.success(deleteAPIStatus.response.message);
+      onOk(deleteAPIStatus.response);
     }
     if (deleteAPIStatus.error) {
       toast.error(deleteAPIStatus.error.message);
     }
-  }, [deleteAPIStatus.data, deleteAPIStatus.error]);
+  }, [deleteAPIStatus.response, deleteAPIStatus.error]);
 
   const onOkClick = () => {
     deleteAPIFetch(data.id);

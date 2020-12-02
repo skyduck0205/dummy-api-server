@@ -74,24 +74,24 @@ function ApiEditModal({ open, data, onOk, onCancel }) {
   }, [open, data]);
 
   React.useEffect(() => {
-    if (updateAPIStatus.data) {
-      toast.success(updateAPIStatus.data.message);
+    if (updateAPIStatus.response) {
+      toast.success(updateAPIStatus.response.message);
       onOk(form);
     }
     if (updateAPIStatus.error) {
       toast.error(updateAPIStatus.error.message);
     }
-  }, [updateAPIStatus.data, updateAPIStatus.error]);
+  }, [updateAPIStatus.response, updateAPIStatus.error]);
 
   React.useEffect(() => {
-    if (createAPIStatus.data) {
-      toast.success(createAPIStatus.data.message);
-      onOk(createAPIStatus.data);
+    if (createAPIStatus.response) {
+      toast.success(createAPIStatus.response.message);
+      onOk(createAPIStatus.response);
     }
     if (createAPIStatus.error) {
       toast.error(createAPIStatus.error.message);
     }
-  }, [createAPIStatus.data, createAPIStatus.error]);
+  }, [createAPIStatus.response, createAPIStatus.error]);
 
   const isPathValid = !!form.path.length;
   const isResponsesValid = !!form.responses.length;

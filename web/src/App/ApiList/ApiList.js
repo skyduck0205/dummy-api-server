@@ -61,23 +61,23 @@ function ApiList() {
   }, []);
 
   React.useEffect(() => {
-    if (updateAPIStatus.data) {
-      toast.success(updateAPIStatus.data.message);
+    if (updateAPIStatus.response) {
+      toast.success(updateAPIStatus.response.message);
       listAPIsFetch();
     }
     if (updateAPIStatus.error) {
       toast.error(updateAPIStatus.error.message);
     }
-  }, [updateAPIStatus.data, updateAPIStatus.error]);
+  }, [updateAPIStatus.response, updateAPIStatus.error]);
 
   React.useEffect(() => {
-    if (listAPIsStatus.data) {
-      setAPIs(listAPIsStatus.data.data);
+    if (listAPIsStatus.response) {
+      setAPIs(listAPIsStatus.response.data);
     }
     if (listAPIsStatus.error) {
       toast.error(listAPIsStatus.error.message);
     }
-  }, [listAPIsStatus.data, listAPIsStatus.error]);
+  }, [listAPIsStatus.response, listAPIsStatus.error]);
 
   const onResponseSelect = (apiID, currentResponseID) => {
     updateAPIFetch(apiID, { currentResponseID });
