@@ -90,7 +90,6 @@ function ConfigModal({ open, config, onOk, onCancel }) {
                 margin="normal"
                 value={form.delay}
                 min={0}
-                max={3}
                 error={!isDelayValid}
                 onChange={(e) => onFormChange('delay', +e.target.value)}
                 helperText="Milliseconds delay for all APIs"
