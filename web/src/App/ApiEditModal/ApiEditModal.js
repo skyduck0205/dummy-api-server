@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _isInteger from 'lodash/isInteger';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Box from '@material-ui/core/Box';
@@ -21,6 +22,7 @@ import ApiResponses from './ApiResponses';
 
 const defaultForm = {
   id: null,
+  delay: 0,
   method: 'GET',
   path: '',
   description: '',
@@ -41,6 +43,7 @@ function ApiEditModal({ open, data, onOk, onCancel }) {
       if (data) {
         setForm({
           id: data.id,
+          delay: _isInteger(data.delay) ? data.delay : 0,
           method: data.method,
           path: data.path,
           description: data.description,
@@ -73,9 +76,10 @@ function ApiEditModal({ open, data, onOk, onCancel }) {
     }
   }, [createAPIStatus.response, createAPIStatus.error]);
 
+  const isDelayValid = _isInteger(form.delay) && form.delay >= 0;
   const isPathValid = !!form.path.length;
   const isResponsesValid = !!form.responses.length;
-  const isFormValid = isPathValid && isResponsesValid;
+  const isFormValid = isPathValid && isResponsesValid && isDelayValid;
 
   const onFormChange = (key, value) => {
     setForm((prevState) => ({
@@ -114,11 +118,30 @@ function ApiEditModal({ open, data, onOk, onCancel }) {
 
             {/* modal body */}
             <Box p={3} py={2} overflow="auto">
-              {/* method */}
-              <ApiMethodSelector
-                value={form.method}
-                onChange={(e) => onFormChange('method', e.target.value)}
-              />
+              <Box display="flex">
+                {/* method */}
+                <ApiMethodSelector
+                  value={form.method}
+                  onChange={(e) => onFormChange('method', e.target.value)}
+                />
+                {/* delay */}
+                <TextField
+                  required
+                  type="number"
+                  id="das-api-delay"
+                  name="das-api-delay"
+                  label="Delay (ms)"
+                  size="small"
+                  margin="normal"
+                  value={form.delay}
+                  min={0}
+                  error={!isDelayValid}
+                  onChange={(e) => onFormChange('delay', +e.target.value)}
+                  placeholder="API delay"
+                  helperText="Prior to config delay."
+                  style={{ marginLeft: 'auto' }}
+                />
+              </Box>
               {/* path */}
               <TextField
                 fullWidth
