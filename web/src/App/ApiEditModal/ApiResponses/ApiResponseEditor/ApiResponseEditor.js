@@ -7,6 +7,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
 import Icon from '@material-ui/core/Icon';
+import Chip from '@material-ui/core/Chip';
 import IconButton from '@material-ui/core/IconButton';
 import HttpStatus from 'components/HttpStatus';
 import JsonEditor from 'components/JsonEditor';
@@ -65,11 +66,13 @@ function ApiResponseEditor({
     >
       <ExpansionPanelSummary classes={{ content: classes.summary }}>
         <HttpStatus status={response.status} mr={1} />
-        {response.name}
         {isCurrent && (
-          <Box component="span" ml={1} color="secondary.main">
-            (current)
-          </Box>
+          <Chip
+            variant="outlined"
+            size="small"
+            color="secondary"
+            label="Current response"
+          />
         )}
         {/* actions */}
         <Box ml="auto">
