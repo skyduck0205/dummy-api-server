@@ -212,7 +212,10 @@ app.all('*', (req, res) => {
       message: 'Dummy API Server: API not found!'
     });
   }
-  const delay = db.get('config.delay').value();
+  // get response delay
+  const configDelay = db.get('config.delay').value();
+  const apiDelay = response.delay;
+  const delay = _.isInteger(apiDelay) ? apiDelay : configDelay;
   setTimeout(() => {
     res.status(response.status).send(response.body);
   }, _.isInteger(delay) ? delay : 0);

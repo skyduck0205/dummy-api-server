@@ -73,7 +73,9 @@ class DummyRouter {
   getCurrentResponse(method, path, query) {
     const api = this.getMatchedAPI(method, path, query);
     if (!api) { return null; }
-    return _.find(api.responses, { id: api.currentResponseID }) || null;
+    const response =  _.find(api.responses, { id: api.currentResponseID }) || null;
+    if (response) { response.delay = api.delay; }
+    return response;
   }
 }
 
