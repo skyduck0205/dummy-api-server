@@ -6,6 +6,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Icon from '@material-ui/core/Icon';
 import Tooltip from '@material-ui/core/Tooltip';
 import Fab from '@material-ui/core/Fab';
+import Chip from '@material-ui/core/Chip';
 import useApi from 'hooks/useApi';
 import useToast from 'hooks/useToast';
 import api from 'services/api';
@@ -144,6 +145,21 @@ function ApiList() {
               title: 'Description',
               field: 'description',
               cellStyle: { fontSize: 'initial' },
+            },
+            {
+              title: 'Delay',
+              field: 'delay',
+              searchable: false,
+              render: (rowData) =>
+                rowData.delay > 0 && (
+                  <Chip
+                    variant="outlined"
+                    size="small"
+                    color="default"
+                    label={`${rowData.delay}ms`}
+                    style={{ marginRight: 4 }}
+                  />
+                ),
             },
             {
               title: 'Response',
