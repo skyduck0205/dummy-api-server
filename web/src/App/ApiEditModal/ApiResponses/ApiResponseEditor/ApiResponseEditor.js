@@ -66,6 +66,7 @@ function ApiResponseEditor({
     >
       <ExpansionPanelSummary classes={{ content: classes.summary }}>
         <HttpStatus status={response.status} mr={1} />
+        <Box mr={1}>{response.name}</Box>
         {isCurrent && (
           <Chip
             variant="outlined"
