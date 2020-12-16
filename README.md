@@ -1,13 +1,25 @@
 # Dummy API Server
 
+Dummy API Server is an API mocking server with UI console to manage your mock APIs. It helps you develop and test your front-end application without having to rely on the backend services.
+
+![Dummy API Server console](https://user-images.githubusercontent.com/6456051/102369949-7e196e80-3ff7-11eb-978c-2993b66ee6d6.png)
+
 - [Dummy API Server](#dummy-api-server)
   - [Environment](#environment)
   - [Run](#run)
     - [Server](#server)
     - [Web](#web)
   - [Dummy API](#dummy-api)
+    - [Create an API](#create-an-api)
+      - [API Path with URL Parameters](#api-path-with-url-parameters)
+      - [API Path with Query Parameters](#api-path-with-query-parameters)
+      - [Adding delays](#adding-delays)
+    - [Select API responses](#select-api-responses)
+    - [Disable an API](#disable-an-api)
+  - [Routing Strategy](#routing-strategy)
   - [Database Schema](#database-schema)
     - [Database](#database)
+    - [Config](#config)
     - [API](#api)
     - [Response](#response)
 
@@ -52,7 +64,66 @@ yarn start
 
 You can open http://locahost:8888 to manage your APIs on the Dummy API web page.
 
-(Documentation WIP)
+### Create an API
+
+Click the "Add API" button on the bottom-right of the web console, choose a method, fill the path and create at least one response to create a new API.
+
+#### API Path with URL Parameters
+
+The Dummy API Server uses [url-pattern](https://github.com/snd/url-pattern) to match patterns so you could create an API path with URL parameters e.g. `/api/users/:userId`. Note that every API should have unique patterns of paths. If an API `/api/:a` exists, you cannot create APIs like `/api/:b`, the server will regard it as conflict.
+
+If an API has path: `/api/users/:userId`
+- `/api/users/1` (matched)
+- `/api/users/any` (matched)
+- `/api/users/1/` (unmatched)
+- `/api/users` (unmatched)
+- `/api/users/1/permission` (unmatched)
+
+#### API Path with Query Parameters
+
+The API can accept any query parameters if no query parameters are defined on its path. If you want to matching an API only if the request URL has one or more specific query parameters, you can defined them on its API path.
+
+Loose query parameter is defined without a value. The API path `/api/users?page` will be matched when you request the dummy server with URLs that contain a `page` parameter with a value. For example:
+- `/api/users?page=1` (matched)
+- `/api/users?page=1&size=10` (matched)
+- `/api/users?size=10` (unmatched)
+
+Strict query parameter is defined with a value. The API path `/api/users?page=10` will be matched when you call the dummy server with URLs that contain a `page=10` parameter. For example:
+- `/api/users?page=10` (matched)
+- `/api/users?page=1` (unmatched)
+
+#### Adding delays
+
+You can add delay for all APIs by clicking the top-right config button and set global delay, or set the delay on API editor for each API. It will override the global value if it is set > 0.
+
+### Select API responses
+
+If you create an API with multiple responses, you can select one of them as the "current response" on the response dropdown. If the API matches, the dummy server returns the selected response.
+
+### Disable an API
+
+Click the eye icon on the actions of an API. It toggles the visibility of the API.
+
+## Routing Strategy
+
+If multiple dummy APIs match the request URL, it will use a "strict first" routing strategy to sort the APIs
+1. Less URL parameters
+2. More strict query parameters
+3. More loose query parameters
+
+For example: A request with URL `/api/10/3?page=1` matches these four dummy API paths
+1. (1) `/api/:schoolId/:classId`
+2. (2) `/api/10/:classId?page`
+3. (3) `/api/:schoolId/:classId?page=1`
+4. (4) `/api/:schoolId/:classId?page`
+
+With "strict first" routing strategy, it will be ordered to:
+1. (2) `/api/10/:classId?page`
+1. (3) `/api/:schoolId/:classId?page=1`
+1. (4) `/api/:schoolId/:classId?page`
+1. (1) `/api/:schoolId/:classId`
+
+And finally returns the response of (2) API.
 
 ## Database Schema
 
@@ -62,7 +133,14 @@ Dummy API Server use lowdb which is a light weight database. All of your data wi
 
 |Key|Type|Default|Description|
 |---|---|---|---|
+|config|Config||Dummy API config|
 |apis|API[]|[]|Dummy API list|
+
+### Config
+|Key|Type|Default|Description|
+|---|---|---|---|
+|name|string||The filename of the db JSON|
+|delay|number|0|Milliseconds delay added to all APIs|
 
 ### API
 
@@ -76,6 +154,7 @@ Dummy API Server use lowdb which is a light weight database. All of your data wi
 |responses|Response[]|[]|Possible responses that can be selected|
 |currentResponseID|string|null|Current response that server returns when API is called|
 |disabled|bool|false|Is this API disabled or not. If a disabled API is called, server will response 404|
+|delay|number|0|Milliseconds delay added to API. Will override the global delay|
 
 Example:
 ```json
@@ -87,7 +166,8 @@ Example:
   "description": "Get an user by its ID",
   "responses": [],
   "currentResponseID": null,
-  "disabled": false
+  "disabled": false,
+  "delay": 0
 }
 ```
 
