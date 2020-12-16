@@ -16,7 +16,7 @@ class DummyRouter {
   updatePatterns() {
     this.patterns = _(this.apis)
       .uniqBy('normalizedPath')
-      .map((api) => new DummyPattern(api.path))
+      .map((api) => new DummyPattern(api.normalizedPath))
       .value();
     debug('updatePatterns:', _.map(this.patterns, 'path'));
   }
@@ -36,7 +36,7 @@ class DummyRouter {
       matchedAPI = _.find(this.apis, {
         disabled: false,
         method,
-        path: pattern.path
+        normalizedPath: pattern.path
       });
       // break lodash forEach if api found
       return !matchedAPI;
