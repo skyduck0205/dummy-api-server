@@ -215,7 +215,7 @@ app.all('*', (req, res) => {
   // get response delay
   const configDelay = db.get('config.delay').value();
   const apiDelay = response.delay;
-  const delay = _.isInteger(apiDelay) ? apiDelay : configDelay;
+  const delay = _.isInteger(apiDelay) && apiDelay > 0 ? apiDelay : configDelay;
   setTimeout(() => {
     res.status(response.status).send(response.body);
   }, _.isInteger(delay) ? delay : 0);
