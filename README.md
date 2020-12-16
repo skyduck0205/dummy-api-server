@@ -66,7 +66,7 @@ You can open http://locahost:8888 to manage your APIs on the Dummy API web page.
 
 ### Create an API
 
-Click the "Add API" button on the bottom-right of the web console, choose a method, fill the path and create at least one response to create a new API.
+Click the "Add API" button on the bottom-right of the web console, choose a method, fill the path and create at least one response to create a new API. Note that you should avoid creating APIs with `/_ds` as the path prefix. It is reserved for the management APIs of the Dummy API Server.
 
 #### API Path with URL Parameters
 
