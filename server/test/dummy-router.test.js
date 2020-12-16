@@ -167,9 +167,9 @@ describe('DummyRouter', () => {
 
     it('filter disabled API', () => {
       const apis = [
-        { method: 'GET', path: '/api/0', disabled: true },
-        { method: 'GET', path: '/api/1', disabled: true },
-        { method: 'GET', path: '/api/2', disabled: false }
+        { method: 'GET', normalizedPath: '/api/0', disabled: true },
+        { method: 'GET', normalizedPath: '/api/1', disabled: true },
+        { method: 'GET', normalizedPath: '/api/2', disabled: false }
       ];
       const dp = new DummyRouter(apis);
       const api = dp.getMatchedAPI('GET', '', {});
@@ -178,9 +178,9 @@ describe('DummyRouter', () => {
 
     it('filter APIs with method', () => {
       const apis = [
-        { method: 'GET', path: '/api/0', disabled: true },
-        { method: 'POST', path: '/api/1', disabled: false },
-        { method: 'GET', path: '/api/2', disabled: false }
+        { method: 'GET', normalizedPath: '/api/0', disabled: true },
+        { method: 'POST', normalizedPath: '/api/1', disabled: false },
+        { method: 'GET', normalizedPath: '/api/2', disabled: false }
       ];
       const dp = new DummyRouter(apis);
       const api = dp.getMatchedAPI('GET', '', {});
@@ -189,9 +189,9 @@ describe('DummyRouter', () => {
 
     it('filter APIs by intersection of patterns paths and apis paths', () => {
       const apis = [
-        { method: 'GET', path: '/api/20', disabled: false },
-        { method: 'GET', path: '/api/1', disabled: false },
-        { method: 'GET', path: '/api/30', disabled: false }
+        { method: 'GET', normalizedPath: '/api/20', disabled: false },
+        { method: 'GET', normalizedPath: '/api/1', disabled: false },
+        { method: 'GET', normalizedPath: '/api/30', disabled: false }
       ];
       const dp = new DummyRouter(apis);
       const api = dp.getMatchedAPI('GET', '', {});
@@ -200,10 +200,10 @@ describe('DummyRouter', () => {
 
     it('filter APIs by intersection of patterns paths and apis paths with order of matched api', () => {
       const apis = [
-        { method: 'GET', path: '/api/20', disabled: false },
-        { method: 'GET', path: '/api/2', disabled: false },
-        { method: 'GET', path: '/api/1', disabled: false },
-        { method: 'GET', path: '/api/30', disabled: false }
+        { method: 'GET', normalizedPath: '/api/20', disabled: false },
+        { method: 'GET', normalizedPath: '/api/2', disabled: false },
+        { method: 'GET', normalizedPath: '/api/1', disabled: false },
+        { method: 'GET', normalizedPath: '/api/30', disabled: false }
       ];
       const dp = new DummyRouter(apis);
       const api = dp.getMatchedAPI('GET', '', {});
@@ -212,9 +212,9 @@ describe('DummyRouter', () => {
 
     it('return first matched API', () => {
       const apis = [
-        { method: 'GET', path: '/api/0', disabled: false },
-        { method: 'GET', path: '/api/1', disabled: false },
-        { method: 'GET', path: '/api/2', disabled: false }
+        { method: 'GET', normalizedPath: '/api/0', disabled: false },
+        { method: 'GET', normalizedPath: '/api/1', disabled: false },
+        { method: 'GET', normalizedPath: '/api/2', disabled: false }
       ];
       const dp = new DummyRouter(apis);
       const api = dp.getMatchedAPI('GET', '', {});
@@ -252,7 +252,7 @@ describe('DummyRouter', () => {
         });
       const dp = new DummyRouter();
       const api = dp.getCurrentResponse('GET', '', {});
-      assert.deepEqual(api, { id: 'id-1' });
+      assert.equal(api.id, 'id-1');
     });
 
     it('return null if response id not found', () => {
@@ -268,5 +268,20 @@ describe('DummyRouter', () => {
       const api = dp.getCurrentResponse('GET', '', {});
       assert.equal(api, null);
     });
+
+    it('return delay of api', () => {
+      matchAPIStub
+        .returns({
+          delay: 2000,
+          currentResponseID: 'id-1',
+          responses: [
+            { id: 'id-0' },
+            { id: 'id-1' }
+          ]
+        });
+      const dp = new DummyRouter();
+      const api = dp.getCurrentResponse('GET', '', {});
+      assert.deepEqual(api, { id: 'id-1', delay: 2000 });
+    })
   });
 });
